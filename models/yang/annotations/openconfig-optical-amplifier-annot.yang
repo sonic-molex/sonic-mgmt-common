@@ -1,0 +1,401 @@
+module openconfig-optical-amplifier-annot {
+
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/annotation/oc-opt-amp-annot";
+    prefix "oc-opt-amp-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import openconfig-optical-amplifier { prefix oc-opt-amp; }
+
+    deviation /oc-opt-amp:optical-amplifier {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers {
+      deviate add {
+        sonic-ext:table-name "OTN_OA";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier {
+      deviate add {
+        sonic-ext:key-transformer "oc_name_key_xfmr";
+        sonic-ext:table-transformer "otn_table_xfmr";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:name {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:name {
+      deviate add {
+        sonic-ext:field-transformer "oc_name_field_xfmr";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:type {
+      deviate add {
+        sonic-ext:field-name "type";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:target-gain {
+      deviate add {
+        sonic-ext:field-name "target-gain";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:min-gain {
+      deviate add {
+        sonic-ext:field-name "min-gain";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:max-gain {
+      deviate add {
+        sonic-ext:field-name "max-gain";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:target-gain-tilt {
+      deviate add {
+        sonic-ext:field-name "target-gain-tilt";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:gain-range {
+      deviate add {
+        sonic-ext:field-name "gain-range";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:amp-mode {
+      deviate add {
+        sonic-ext:field-name "amp-mode";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:target-output-power {
+      deviate add {
+        sonic-ext:field-name "target-output-power";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:max-output-power {
+      deviate add {
+        sonic-ext:field-name "max-output-power";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:enabled {
+      deviate add {
+        sonic-ext:field-name "enabled";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config/oc-opt-amp:fiber-type-profile {
+      deviate add {
+        sonic-ext:field-name "fiber-type-profile";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state {
+      deviate add {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:table-name "OTN_OA_TABLE";
+        sonic-ext:key-transformer "oc_name_key_xfmr";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:name {
+      deviate add {
+        sonic-ext:field-transformer "oc_name_field_xfmr";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:type {
+      deviate add {
+        sonic-ext:field-name "type";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:target-gain {
+      deviate add {
+        sonic-ext:field-name "target-gain";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:min-gain {
+      deviate add {
+        sonic-ext:field-name "min-gain";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:max-gain {
+      deviate add {
+        sonic-ext:field-name "max-gain";
+      }
+    }
+
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:target-gain-tilt {
+      deviate add {
+        sonic-ext:field-name "target-gain-tilt";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:gain-range {
+      deviate add {
+        sonic-ext:field-name "gain-range";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:amp-mode {
+      deviate add {
+        sonic-ext:field-name "amp-mode";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:target-output-power {
+      deviate add {
+        sonic-ext:field-name "target-output-power";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:max-output-power {
+      deviate add {
+        sonic-ext:field-name "max-output-power";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:enabled {
+      deviate add {
+        sonic-ext:field-name "enabled";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:fiber-type-profile {
+      deviate add {
+        sonic-ext:field-name "fiber-type-profile";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:component {
+      deviate add {
+        sonic-ext:field-name "component";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:ingress-port {
+      deviate add {
+        sonic-ext:field-name "ingress-port";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:egress-port {
+      deviate add {
+        sonic-ext:field-name "egress-port";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:actual-gain {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:actual-gain/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "actual-gain";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:actual-gain-tilt {
+      deviate add {
+      }
+    }    
+    
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:actual-gain-tilt/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "actual-gain-tilt";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:input-power-total {
+      deviate add {
+      }
+    }    
+    
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:input-power-total/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "input-power-total";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:input-power-c-band {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:input-power-c-band/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "input-power-c-band";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:input-power-l-band {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:input-power-l-band/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "input-power-l-band";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:output-power-total {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:output-power-total/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "output-power-total";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:output-power-c-band {
+      deviate add {
+      }
+    }    
+    
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:output-power-c-band/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "output-power-c-band";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:output-power-l-band {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:output-power-l-band/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "output-power-l-band";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:laser-bias-current {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:laser-bias-current/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "laser-bias-current";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:optical-return-loss {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state/oc-opt-amp:optical-return-loss/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "optical-return-loss";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels {
+      deviate add {
+        sonic-ext:table-name "OTN_OSC";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel {
+      deviate add {
+        sonic-ext:key-transformer "osc_key_xfmr";
+        sonic-ext:table-transformer "otn_table_xfmr";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:interface {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:config {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:config/oc-opt-amp:interface {
+      deviate add {
+        sonic-ext:field-transformer "osc_interface_xfmr";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:state {
+      deviate add {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:table-name "OTN_OSC_TABLE";
+        sonic-ext:key-transformer "osc_key_xfmr";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:state/oc-opt-amp:interface {
+      deviate add {
+        sonic-ext:field-transformer "osc_interface_xfmr";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:state/oc-opt-amp:input-power {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:state/oc-opt-amp:input-power/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "input-power";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:state/oc-opt-amp:output-power {
+      deviate add {
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:state/oc-opt-amp:output-power/oc-opt-amp:instant {
+      deviate add {
+        sonic-ext:field-name "output-power";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:state/oc-opt-amp:laser-bias-current {
+      deviate add {
+      }
+    }
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:state/oc-opt-amp:laser-bias-current/oc-opt-amp:instant  {
+      deviate add {
+        sonic-ext:field-name "laser-bias-current";
+      }
+    }
+
+    deviation /oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:state/oc-opt-amp:output-frequency {
+      deviate add {
+        sonic-ext:field-name "output-frequency";
+      }
+    }
+
+}

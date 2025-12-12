@@ -13,3 +13,6 @@ SONICYANG_IMPORTS += sonic-vlan.yang
 SONICYANG_IMPORTS += sonic-mclag.yang
 SONICYANG_IMPORTS += sonic-types.yang
 SONICYANG_IMPORTS += sonic-vrf.yang
+SONICYANG_IMPORTS += sonic-channel-monitor.yang 
+SONICYANG_IMPORTS += sonic-optical-amplifier.yang 
+SONICYANG_IMPORTS += sonic-optical-attenuator.yang

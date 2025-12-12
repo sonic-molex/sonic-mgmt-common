@@ -1,0 +1,122 @@
+module openconfig-channel-monitor-annot {
+
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/annotation/oc-chan-monitor-annot";
+    prefix "oc-chan-monitor-annot";
+
+    import openconfig-extensions { prefix oc-ext; }
+    import openconfig-transport-types { prefix oc-opt-types; }
+    import openconfig-channel-monitor { prefix oc-chan-monitor; }
+
+    deviation /oc-chan-monitor:channel-monitors {
+      deviate add {
+         sonic-ext:table-name "OTN_OCM";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor {
+      deviate add {
+        sonic-ext:key-transformer "oc_name_key_xfmr";
+        sonic-ext:table-transformer "otn_table_xfmr";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:config {
+      deviate add {
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:config/oc-chan-monitor:monitor-port {
+      deviate add {
+        sonic-ext:field-name "monitor-port";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:config/oc-chan-monitor:name {
+      deviate add {
+        sonic-ext:field-transformer "oc_name_field_xfmr";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:state {
+      deviate add {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:table-name "OTN_OCM_TABLE";
+        sonic-ext:key-transformer "oc_name_key_xfmr";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:state/oc-chan-monitor:monitor-port {
+      deviate add {
+        sonic-ext:field-name "monitor-port";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:state/oc-chan-monitor:name {
+      deviate add {
+        sonic-ext:field-transformer "oc_name_field_xfmr";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels {
+      deviate add {
+        sonic-ext:table-transformer "otn_table_xfmr";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel {
+      deviate add {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:table-name "OTN_OCM_CHANNEL_TABLE";               
+        sonic-ext:table-transformer "otn_table_xfmr";
+        sonic-ext:key-transformer "ocm_channel_key_xfmr";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:lower-frequency {
+      deviate add {
+        sonic-ext:field-name "lower-frequency";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:upper-frequency {
+      deviate add {
+        sonic-ext:field-name "upper-frequency";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:state {
+      deviate add {
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:state/oc-chan-monitor:upper-frequency {
+      deviate add {
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:state/oc-chan-monitor:power {
+      deviate add {
+        sonic-ext:field-name "power";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:state/oc-chan-monitor:target-power {
+      deviate add {
+        sonic-ext:field-name "target-power";
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:state/oc-chan-monitor:lower-frequency {
+      deviate add {
+      }
+    }
+
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:name {
+      deviate add {
+      }
+    }
+
+}
+
