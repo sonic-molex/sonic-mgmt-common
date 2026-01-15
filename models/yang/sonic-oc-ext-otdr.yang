@@ -1,0 +1,489 @@
+module sonic-oc-ext-otdr {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://sonic-oc-ext/yang/otdr";
+
+  prefix "oc-otdr";
+
+  // import some basic types
+  import openconfig-platform { prefix oc-platform; }
+  import openconfig-platform-types { prefix oc-platform-types; }
+  import openconfig-extensions { prefix oc-ext; }
+  import openconfig-yang-types { prefix oc-yang; }
+  import openconfig-transport-types { prefix oc-opt-types; }
+  import openconfig-optical-amplifier { prefix oc-amp; }
+
+  // meta
+  organization "sonic-otn-wg";
+
+  contact
+    "SONiC OTN working group
+      github.com/sonic-otn";
+
+  description
+    "This openconfig style model describes configuration and operational state data
+    for an OTDR.
+    Reference: OCP gnoi-otdr proto specification and initial version from Alibaba Inc.";
+
+  oc-ext:openconfig-version 0.1.0;
+
+  revision 2026-01-10 {
+    description
+      "Initial release with basic configuration, state and results for OTDR scan,
+      including fiber profile, scanning profile, scheduler, OTDR module specification.";
+    reference "0.1.0";
+  }
+
+  // feature statements
+
+  // identity statements
+
+  // typedef statements
+
+  typedef otdr-event-type {
+    type enumeration {
+      enum START {
+        description
+          "First event on a OTDR trace from initial point, 
+          regardless if the loss or reflection exceed the thresholds or not.";
+      }
+      enum END {
+        description
+          "Last event on a OTDR trace is the end point of a fiber.";
+      }
+      enum REFLECTION {
+        description
+          "The optical pulse is reflected. It is displayed as a trace peak.";
+      }
+      enum NON-REFLECTION {
+        description
+          "Loss is detected with reflection suddenly decreasedt is displayed as a drop with no peak.";
+      }
+      enum FIBER-SECTION {
+        description
+        "Detected degradation based on loss slope including macro bend, micro bend and suspicious bend.";
+      }
+      enum UNKOWN {
+        description
+        "Unknown otdr event";
+      }
+    }
+  }
+
+  // grouping statements
+  grouping otdr-fiber-profile {
+    description
+      "Enclosing container for otdr fiber-profile configuration";
+
+    container fiber-profile {
+
+      leaf refractive-index {
+        type decimal64 {
+          fraction-digits 6;
+        }
+        description
+          "Refractive ratio.";
+      }
+
+      leaf backscatter-index {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        description
+          "Backscatter ratio.";
+      }
+
+      leaf reflection-threshold {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        description
+	        "Reflection threshold.";
+      }
+
+      leaf splice-loss-threshold {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        description
+          "Splice loss threshold.";
+      }
+
+      leaf end-of-fiber-threshold {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        description
+          "Fiber end event threshold.";
+      }
+    }
+  }
+
+  grouping otdr-scanning-profile {
+    description
+      "Enclosing container for otdr scanning profile configuration.";
+
+    container scanning-profile {
+
+      leaf distance-range {
+        type uint32;
+        units km;
+        description
+          "The maximum fiber distance range that the OTDR trace will support.";
+      }
+
+      leaf pulse-width {
+        type uint32;
+        units ns;
+        description
+          "The pulse width sent by the OTDR during the test.";
+      }
+
+      leaf acquisition-time {
+        type uint32;
+        units s;
+        description
+          "The time in seconds in which the OTDR trace will run continuously to collect data.";
+      }
+
+      leaf sampling-resolution {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        units "m";
+        description
+          "Sampling resolution in meters.";
+      }
+
+      leaf fiber-type {
+        type identityref {
+          base oc-amp:FIBER_TYPE_PROFILE;
+        }
+        default oc-amp:SSMF;
+        description
+          "The type of fiber that is being measured.";
+      }
+
+      leaf wavelength {
+        type oc-opt-types:frequency-type;
+        description
+          "The wavelength in MHz that will be sent by the OTDR. 
+          This may be left blank if the OTDR only supports one wavelength.";
+      }
+
+      leaf disable_auto_negotiation {
+        type boolean;
+        default false;
+        description
+          "Disable auto negotiation expects the following behavior:
+          - When set to True, the device will not attempt any negotiation with
+            the far end device to prevent OTDR usage on the same fiber.
+          - When set to False and the far end is reachable, communication will
+            occur with both devices to prevent OTDR usage on the same fiber.
+          - When set to False and the far end is NOT reachable (i.e. fiber cut),
+            the device will not attempt any negotiation with the far end device to
+            prevent OTDR usage on the same fiber.
+          - By default, value is False.";
+      }
+    }
+  }
+
+  grouping otdr-config {
+    description
+      "Configuration data for otdr scan definitions";
+
+    leaf name {
+      type leafref {
+        path "/oc-platform:components/oc-platform:component/"
+                 + "oc-platform:name";
+        }
+    description
+      "OTDR name";
+    }
+
+    leaf parent-port {
+      type leafref {
+        path "/oc-platform:components/oc-platform:component/"
+                 + "oc-platform:name";
+      }
+	description
+	  "OTDR scan port";
+    }
+
+    uses otdr-fiber-profile;
+    uses otdr-scanning-profile;
+  }
+
+  grouping otdr-state {
+    description
+      "Operational state data for media channels ";
+
+    leaf scanning-status {
+      type identityref {
+        base oc-platform-types:COMPONENT_OPER_STATUS;
+      }
+      description
+        "This reports the current scanning status
+        of the OTDR.";
+    }
+  }
+
+  grouping otdr-trace {
+    description
+      "Top-level grouping for OTDR results";
+
+    container trace {
+      description
+        "Enclosing container for otdr results list";
+
+      leaf scan-time {
+        type oc-yang:date-and-time;
+        description
+          "Time of each scanning operation, including date and time";
+      }
+
+      leaf total-length {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        units km;
+        description
+          "Total measured length of a fiber span";
+      }
+
+      leaf total-loss {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        units dB;
+        description
+          "Total measured loss of a fiber span.";
+      }
+
+      leaf optical-return-loss {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        units dB;
+        description
+          "Optical return loss of a fiber span.";
+      }
+
+      leaf average-loss-km {
+        type decimal64 {
+          fraction-digits 2;
+        }
+        units dB;
+        description
+          "Average loss per km of a fiber span.";
+      }
+
+      leaf discovered-fiber-type {
+        type identityref {
+          base oc-amp:FIBER_TYPE_PROFILE;
+        }
+        description
+          "The type of fiber that is being measured as discovered by the OTDR.";  
+      }
+
+      leaf event-count {
+        type uint32;
+        description
+          "Count of the event.";
+      }
+
+      list event {
+        key event-id;
+        description
+          "List of otdr results";
+
+        leaf event-id {
+          type uint16;
+          description
+            "Index of event";
+        }
+
+        leaf type {
+          type otdr-event-type;
+          description
+            "Event type";
+        }
+
+        leaf distance {
+          type decimal64 {
+            fraction-digits 2;
+          }
+          units km;
+          description
+            "Event distance at which the event occured.";
+        }
+
+        leaf loss {
+          type decimal64 {
+            fraction-digits 2;
+          }
+          units dB;
+          description
+            "The fiber loss that occurred at the event point.";
+        }
+
+        leaf reflection {
+          type decimal64 {
+            fraction-digits 2;
+          }
+          units dB;
+          description
+            "The reflection that occurred at the event point.";
+        }
+      }
+
+      leaf sor-file {
+        type string;
+        description
+          "file path and name of the sor file. can be uploaded and used for offline analysis.";
+      }
+
+      leaf baseline {
+        type boolean;
+        default false;
+        description 
+          "if this trace is the baseline.";
+      }
+    }
+  }
+
+  grouping otdr-results {
+    description
+      "List of OTDR results";
+
+    list result {
+      max-elements 50;
+      description
+        "List of otdr results";
+
+      key scan-time;
+
+      leaf scan-time {
+        type leafref {
+          path "../trace/scan-time";
+        }
+        description
+          "Time of each scanning operation, including date and time";
+      }
+
+      uses otdr-trace;
+    }
+  }
+
+  grouping otdr-top {
+    description
+      "Top-level grouping for list of defined OTDR monitors";
+
+    container otdrs {
+      description
+        "Enclosing container for OTDR scan list";
+
+      list otdr {
+        key name;
+        description
+          "List of OTDRs";
+
+        leaf name {
+          type leafref {
+            path "../config/name";
+          }
+          description
+            "Reference to name to be monitored";
+        }
+
+        container config {
+          description
+            "Configuration data";
+
+          uses otdr-config;
+        }
+
+        container state {
+
+          config false;
+
+          description
+            "Operational state data";
+
+          uses otdr-config;
+          uses otdr-state;
+        }
+
+        container scan-results {
+
+          config false;
+
+          description
+            "Enclosing container for otdr scan results";
+
+          uses otdr-results;
+        }
+      }
+    }
+  }
+
+  // data definition statements
+
+  uses otdr-top;
+
+  // augment statements
+
+  // rpc statements
+
+  rpc start-scan {
+    description
+      "The RPC instantly trigger the otdr and send back the results. 
+      It is an async request as the otdr scan may take a while to finish.
+      user can query the odtr state for scan status (ACTIVE/INACTIVE).";
+
+    input {
+      leaf name {
+        type leafref {
+          path "/oc-otdr:otdrs/otdr/config/oc-otdr:name";
+        }
+      }
+    }
+    output {
+      leaf message {
+        type string;
+        description
+          "Informational response for the otdr scan starting results";
+      }
+    }
+  }
+
+  rpc update-baseline {
+    description
+      "The RPC will update the baseline result according to the scan time";
+
+    input  {
+      leaf name {
+        type leafref {
+          path "/oc-otdr:otdrs/otdr/config/oc-otdr:name";
+        }
+      }
+
+      leaf scan-time {
+        type oc-yang:date-and-time;
+        description
+          "Update baseline-result, according to scan time";
+      }
+    }
+
+    output  {
+      leaf message {
+        type string;
+        description
+          "Informational response for the otdr update baseline results";
+      }
+    }
+  }
+
+}
