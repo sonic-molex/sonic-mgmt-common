@@ -42,3 +42,4 @@
 # try azure style build Tue Jan 27 16:10:05 EST 2026 3
 # try azure style build Tue Jan 27 16:14:30 EST 2026 4
 #fix issue with mkdir
+#find inner script error
