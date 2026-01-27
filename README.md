@@ -43,3 +43,4 @@
 # try azure style build Tue Jan 27 16:14:30 EST 2026 4
 #fix issue with mkdir
 #find inner script error
+#find inner script error 2
