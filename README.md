@@ -47,3 +47,4 @@
 #find inner script error 3
 #fix issue with shallow clone 
 #test fast again
+#trigger build for logs
