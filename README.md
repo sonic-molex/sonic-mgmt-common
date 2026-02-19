@@ -48,3 +48,4 @@
 #fix issue with shallow clone 
 #test fast again
 #trigger build for logs
+#trigger build for Azure VM
