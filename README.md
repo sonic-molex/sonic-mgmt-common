@@ -50,3 +50,4 @@
 #trigger build for logs
 #trigger build for Azure VM
 #trigger build for Azure VM OOM issue
+#trigger build for Azure VM OOM issue sonic-build-jobs=1
