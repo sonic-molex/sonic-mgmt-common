@@ -63,3 +63,4 @@
 #try changing the user to root for the docker image new build
 #try git fix
 #try git fix in docker 
+#try running again to see time for build
