@@ -60,3 +60,4 @@
 #trigger build longest timeout mkdir /var/cache
 #trigger build longest test by making target/debs folder
 #try changing the user to root for the docker image
+#try changing the user to root for the docker image new build
