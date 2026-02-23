@@ -70,3 +70,4 @@
 #test otn style build no pyang
 #test otn style; need pkg-config
 #test otn style; not building tests
+#test otn style; newer go version
