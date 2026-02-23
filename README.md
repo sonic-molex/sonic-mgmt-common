@@ -65,3 +65,4 @@
 #try git fix in docker 
 #try running again to see time for build
 #test otn style build 
+#test otn style build 2 with go
