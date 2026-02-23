@@ -68,3 +68,4 @@
 #test otn style build 2 with go
 #test otn style build with deps
 #test otn style build no pyang
+#test otn style; need pkg-config
