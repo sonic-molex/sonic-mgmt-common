@@ -66,3 +66,4 @@
 #try running again to see time for build
 #test otn style build 
 #test otn style build 2 with go
+#test otn style build with deps
