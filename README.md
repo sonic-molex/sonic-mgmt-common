@@ -79,3 +79,4 @@
 #test otn style; build tests 4
 #test otn style; run CVL tests
 #test otn style; run CVL tests 2
+#test otn style; run CVL tests with libyang-dev
