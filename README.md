@@ -80,3 +80,4 @@
 #test otn style; run CVL tests
 #test otn style; run CVL tests 2
 #test otn style; run CVL tests with libyang-dev
+#test otn style; run CVL tests with with created database.json
