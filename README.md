@@ -73,3 +73,4 @@
 #test otn style; newer go version
 #test otn style; newer go version 2
 #test otn style; cache libyang
+#test otn style; build tests
