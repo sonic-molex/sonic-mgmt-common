@@ -77,3 +77,4 @@
 #test otn style; build tests 2
 #test otn style; build tests 3
 #test otn style; build tests 4
+#test otn style; run CVL tests
