@@ -85,3 +85,4 @@
 #test otn style; run CVL tests with with created database.json 3
 #test otn style; run CVL tests with with created database.json 4
 #test otn style; run CVL tests with with created database.json 5
+#test otn style; run CVL tests with with created database.json 6
