@@ -90,3 +90,4 @@
 #test otn style; run CVL tests with with azure style invoke 2
 #test otn style; run CVL tests with with azure style invoke 3
 #test otn style; run CVL tests with with azure style invoke 4
+#test otn style; run CVL tests with with azure style invoke 5
