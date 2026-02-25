@@ -102,3 +102,4 @@
 #test otn style; run CVL tests; local tests success; build translib 7
 #test otn style; run CVL tests; yangs in cache folder 
 #test otn style; run CVL tests; yangs in cache folder; reset redis on start 
+#test otn style; run CVL tests; yangs in cache folder; kill redis on timer
