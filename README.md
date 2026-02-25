@@ -92,3 +92,4 @@
 #test otn style; run CVL tests with with azure style invoke 4
 #test otn style; run CVL tests with with azure style invoke 5
 #test otn style; run CVL tests; local tests success
+#test otn style; run CVL tests; local tests success; build translib
