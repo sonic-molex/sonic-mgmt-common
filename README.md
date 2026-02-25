@@ -94,3 +94,4 @@
 #test otn style; run CVL tests; local tests success
 #test otn style; run CVL tests; local tests success; build translib
 #test otn style; run CVL tests; local tests success; build translib 2
+#test otn style; run CVL tests; local tests success; build translib 3
