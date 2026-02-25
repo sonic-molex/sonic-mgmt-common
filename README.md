@@ -88,3 +88,4 @@
 #test otn style; run CVL tests with with created database.json 6
 #test otn style; run CVL tests with with azure style invoke
 #test otn style; run CVL tests with with azure style invoke 2
+#test otn style; run CVL tests with with azure style invoke 3
