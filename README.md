@@ -106,3 +106,4 @@
 #test otn style; run CVL tests; yangs in cache folder; ignore single error
 #test logs upload
 #test logs upload 2
+#test logs upload 3
