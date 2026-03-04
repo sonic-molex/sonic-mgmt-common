@@ -104,3 +104,4 @@
 #test otn style; run CVL tests; yangs in cache folder; reset redis on start 
 #test otn style; run CVL tests; yangs in cache folder; kill redis on timer
 #test otn style; run CVL tests; yangs in cache folder; ignore single error
+#test logs upload
