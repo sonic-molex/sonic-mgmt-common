@@ -112,3 +112,4 @@
 #test blob storage + static webpage
 #test blob storage + static webpage+ redis reinit
 #test blob storage + static webpage+ redis reinit 2
+#test redis strict reinit
