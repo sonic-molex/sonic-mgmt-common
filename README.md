@@ -110,3 +110,4 @@
 #test logs upload 4
 #test blob storage
 #test blob storage + static webpage
+#test blob storage + static webpage+ redis reinit
