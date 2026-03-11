@@ -113,3 +113,4 @@
 #test blob storage + static webpage+ redis reinit
 #test blob storage + static webpage+ redis reinit 2
 #test redis strict reinit
+#test redis strict reinit 2
