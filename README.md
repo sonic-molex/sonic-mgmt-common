@@ -109,3 +109,4 @@
 #test logs upload 3
 #test logs upload 4
 #test blob storage
+#test blob storage + static webpage
