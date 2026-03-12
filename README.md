@@ -116,3 +116,4 @@
 #test redis strict reinit 2
 #test redis strict reinit 3
 #test split logs
+#test updated html
