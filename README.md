@@ -117,3 +117,4 @@
 #test redis strict reinit 3
 #test split logs
 #test updated html
+#test updated html + code cleanup
