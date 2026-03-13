@@ -1,5 +1,5 @@
 package transformer
-	test fail build
+
 import (
 	"errors"
 	"github.com/Azure/sonic-mgmt-common/translib/db"
