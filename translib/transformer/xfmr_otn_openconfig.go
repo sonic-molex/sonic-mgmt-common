@@ -2,9 +2,10 @@ package transformer
 
 import (
 	"errors"
-	"github.com/Azure/sonic-mgmt-common/translib/db"
-	log "github.com/golang/glog"
+	"strconv"
 	"strings"
+
+	log "github.com/golang/glog"
 )
 
 func init() {
@@ -14,12 +15,26 @@ func init() {
 	XlateFuncBind("DbToYang_oc_name_field_xfmr", DbToYang_oc_name_field_xfmr)
 	XlateFuncBind("YangToDb_ocm_channel_key_xfmr", YangToDb_ocm_channel_key_xfmr)
 	XlateFuncBind("DbToYang_ocm_channel_key_xfmr", DbToYang_ocm_channel_key_xfmr)
-	XlateFuncBind("YangToDb_ocm_lower_frequency_xfmr", YangToDb_ocm_lower_frequency_xfmr)
+	XlateFuncBind("YangToDb_ocm_channel_lower_frequency_xfmr", YangToDb_ocm_channel_lower_frequency_xfmr)
+	XlateFuncBind("DbToYang_ocm_channel_lower_frequency_xfmr", DbToYang_ocm_channel_lower_frequency_xfmr)
+	XlateFuncBind("YangToDb_ocm_channel_upper_frequency_xfmr", YangToDb_ocm_channel_upper_frequency_xfmr)
+	XlateFuncBind("DbToYang_ocm_channel_upper_frequency_xfmr", DbToYang_ocm_channel_upper_frequency_xfmr)
 	XlateFuncBind("YangToDb_osc_key_xfmr", YangToDb_osc_key_xfmr)
 	XlateFuncBind("DbToYang_osc_key_xfmr", DbToYang_osc_key_xfmr)
 	XlateFuncBind("YangToDb_osc_interface_xfmr", YangToDb_osc_interface_xfmr)
 	XlateFuncBind("DbToYang_osc_interface_xfmr", DbToYang_osc_interface_xfmr)
 	XlateFuncBind("otn_table_xfmr", otn_table_xfmr)
+	// OTN WSS / wavelength-router transformers
+	XlateFuncBind("YangToDb_wss_index_key_xfmr", YangToDb_wss_index_key_xfmr)
+	XlateFuncBind("DbToYang_wss_index_key_xfmr", DbToYang_wss_index_key_xfmr)
+	XlateFuncBind("YangToDb_wss_index_field_xfmr", YangToDb_wss_index_field_xfmr)
+	XlateFuncBind("DbToYang_wss_index_field_xfmr", DbToYang_wss_index_field_xfmr)
+	XlateFuncBind("YangToDb_wss_power_profile_key_xfmr", YangToDb_wss_power_profile_key_xfmr)
+	XlateFuncBind("DbToYang_wss_power_profile_key_xfmr", DbToYang_wss_power_profile_key_xfmr)
+	XlateFuncBind("YangToDb_wss_power_profile_upper_frequency_xfmr", YangToDb_wss_power_profile_upper_frequency_xfmr)
+	XlateFuncBind("DbToYang_wss_power_profile_upper_frequency_xfmr", DbToYang_wss_power_profile_upper_frequency_xfmr)
+	XlateFuncBind("YangToDb_wss_power_profile_lower_frequency_xfmr", YangToDb_wss_power_profile_lower_frequency_xfmr)
+	XlateFuncBind("DbToYang_wss_power_profile_lower_frequency_xfmr", DbToYang_wss_power_profile_lower_frequency_xfmr)
 }
 
 // Generic KeyXfmr for openconfig "name"
@@ -68,12 +83,26 @@ var YangToDb_ocm_channel_key_xfmr KeyXfmrYangToDb = func(inParams XfmrParams) (s
 		log.Info("YangToDb_ocm_key_xfmr: root: ", inParams.ygRoot,
 			", uri: ", inParams.uri)
 	}
+
 	pathInfo := NewPathInfo(inParams.uri)
 	name := pathInfo.Var("name")
-	lower := pathInfo.Var("lower-frequency")
-	key := name + "|" + lower
+	if name == "*" {
+		return name, nil
+	}
 
-	return key, nil
+	lower := pathInfo.Var("lower-frequency")
+	upper := pathInfo.Var("upper-frequency")
+	if lower == "*" || lower == "" || upper == "*" || upper == "" {
+		// Return empty so the framework enumerates all keys in the table.
+		// Partial wildcards like "name|*" are treated as literal keys by
+		// the framework and fail; only "" or "*" trigger key enumeration.
+		return "", nil
+	}
+
+	idx := name + "|" + lower + "|" + upper
+
+	log.Info("YangToDb_ocm_channel_key_xfmr - return idx ", idx)
+	return idx, nil
 }
 
 var DbToYang_ocm_channel_key_xfmr KeyXfmrDbToYang = func(inParams XfmrParams) (map[string]interface{}, error) {
@@ -83,51 +112,44 @@ var DbToYang_ocm_channel_key_xfmr KeyXfmrDbToYang = func(inParams XfmrParams) (m
 	if len(tableKeys) >= 2 {
 		rmap["lower-frequency"] = tableKeys[1]
 	}
-
-	tableName := ""
-	if strings.Contains(inParams.uri, "channels/channel") {
-		tableName = "OTN_OCM_CHANNEL_TABLE"
+	if len(tableKeys) >= 3 {
+		rmap["upper-frequency"] = tableKeys[2]
 	}
 
-	upperFreq := ""
-
-	// 1. Try Cache
-	if inParams.dbDataMap != nil && tableName != "" {
-		if tblData, ok := (*inParams.dbDataMap)[inParams.curDb][tableName]; ok {
-			if row, ok2 := tblData[inParams.key]; ok2 {
-				upperFreq = row.Field["upper-frequency"]
-			}
-		}
-	}
-
-	// 2. Direct Redis Fetch (fixes the undefined: db error and the type mismatch)
-	if upperFreq == "" && tableName != "" {
-		ts := &db.TableSpec{Name: tableName}
-		// Using Comp for composite keys allows the driver to handle the '|' separator correctly
-		rowKey := db.Key{Comp: strings.Split(inParams.key, "|")}
-
-		entry, err := inParams.dbs[inParams.curDb].GetEntry(ts, rowKey)
-		if err == nil {
-			upperFreq = entry.Field["upper-frequency"]
-		}
-	}
-
-	if upperFreq != "" {
-		rmap["upper-frequency"] = upperFreq
-	} else {
-		log.Warningf("DbToYang_ocm_channel_key_xfmr: Could not resolve upper-frequency for %s", inParams.key)
-	}
-
+	log.Info("DbToYang_ocm_channel_key_xfmr rmap ", rmap)
 	return rmap, nil
 }
 
-var YangToDb_ocm_lower_frequency_xfmr FieldXfmrYangToDb = func(inParams XfmrParams) (map[string]string, error) {
+var YangToDb_ocm_channel_lower_frequency_xfmr FieldXfmrYangToDb = func(inParams XfmrParams) (map[string]string, error) {
 	var err error
 	rmap := make(map[string]string)
-
 	rmap["NULL"] = "NULL"
-
 	return rmap, err
+}
+
+var DbToYang_ocm_channel_lower_frequency_xfmr FieldXfmrDbtoYang = func(inParams XfmrParams) (map[string]interface{}, error) {
+	rmap := make(map[string]interface{})
+	parts := strings.Split(inParams.key, "|")
+	if len(parts) >= 2 {
+		rmap["lower-frequency"] = parts[1]
+	}
+	return rmap, nil
+}
+
+var YangToDb_ocm_channel_upper_frequency_xfmr FieldXfmrYangToDb = func(inParams XfmrParams) (map[string]string, error) {
+	var err error
+	rmap := make(map[string]string)
+	rmap["NULL"] = "NULL"
+	return rmap, err
+}
+
+var DbToYang_ocm_channel_upper_frequency_xfmr FieldXfmrDbtoYang = func(inParams XfmrParams) (map[string]interface{}, error) {
+	rmap := make(map[string]interface{})
+	parts := strings.Split(inParams.key, "|")
+	if len(parts) >= 3 {
+		rmap["upper-frequency"] = parts[2]
+	}
+	return rmap, nil
 }
 
 // OSC Interface KeyXfmrs
@@ -205,6 +227,27 @@ var otn_table_xfmr TableXfmrFunc = func(inParams XfmrParams) ([]string, error) {
 
 	case strings.HasPrefix(targetUriPath, "/openconfig-optical-amplifier:optical-amplifier/supervisory-channels/supervisory-channel"):
 		tblList = append(tblList, "OTN_OSC")
+
+	case strings.HasPrefix(targetUriPath,
+		"/openconfig-wavelength-router:wavelength-router/media-channels/channel/spectrum-power-profile/distribution"):
+		tblList = append(tblList, "OTN_WSS_SPEC_POWER")
+
+	case strings.HasPrefix(targetUriPath,
+		"/openconfig-wavelength-router:wavelength-router/media-channels/channel/spectrum-power-profile"):
+		tblList = append(tblList, "OTN_WSS_SPEC_POWER")
+
+	case strings.HasPrefix(targetUriPath,
+		"/openconfig-wavelength-router:wavelength-router/media-channels/channel"):
+		tblList = append(tblList, "OTN_WSS")
+
+	case strings.HasPrefix(targetUriPath,
+		"/openconfig-wavelength-router:wavelength-router/media-channels"):
+		return tblList, nil
+
+	case strings.HasPrefix(targetUriPath,
+		"/openconfig-wavelength-router:wavelength-router"):
+		return tblList, nil
+
 	}
 
 	if len(tblList) == 0 {
@@ -213,4 +256,121 @@ var otn_table_xfmr TableXfmrFunc = func(inParams XfmrParams) ([]string, error) {
 	}
 
 	return tblList, nil
+}
+
+// OTN WSS / wavelength-router: channel keyed by index
+var YangToDb_wss_index_key_xfmr KeyXfmrYangToDb = func(inParams XfmrParams) (string, error) {
+	if log.V(3) {
+		log.Info("YangToDb_oc_index_key_xfmr: root: ", inParams.ygRoot,
+			", uri: ", inParams.uri)
+	}
+	pathInfo := NewPathInfo(inParams.uri)
+	ockey := pathInfo.Var("index")
+	return ockey, nil
+}
+
+var DbToYang_wss_index_key_xfmr KeyXfmrDbToYang = func(inParams XfmrParams) (map[string]interface{}, error) {
+	res := make(map[string]interface{}, 1)
+	if log.V(3) {
+		log.Info("DbToYang_oc_index_key_xfmr: ", inParams.key)
+	}
+	// Accept either "index" or "index|something"
+	k := inParams.key
+	if strings.Contains(k, "|") {
+		k = strings.SplitN(k, "|", 2)[0]
+	}
+
+	v, err := strconv.ParseUint(k, 10, 32)
+	if err != nil {
+		return res, err
+	}
+	res["index"] = uint32(v)
+	return res, nil
+}
+
+// Index is the table key; do not store as separate field in DB
+var YangToDb_wss_index_field_xfmr FieldXfmrYangToDb = func(inParams XfmrParams) (map[string]string, error) {
+	resMap := make(map[string]string)
+	resMap["NULL"] = "NULL"
+	return resMap, nil
+}
+
+var DbToYang_wss_index_field_xfmr FieldXfmrDbtoYang = func(inParams XfmrParams) (map[string]interface{}, error) {
+	rmap := make(map[string]interface{})
+
+	v, err := strconv.ParseUint(inParams.key, 10, 32)
+	if err != nil {
+		return rmap, err
+	}
+	rmap["index"] = uint32(v)
+
+	return rmap, nil
+}
+
+// OTN WSS spectrum-power-profile distribution: CONFIG_DB key is index|lower-frequency|upper-frequency.
+// YANG list distribution is keyed by (lower-frequency, upper-frequency).
+var YangToDb_wss_power_profile_key_xfmr KeyXfmrYangToDb = func(inParams XfmrParams) (string, error) {
+	if log.V(3) {
+		log.Info("YangToDb_oc_power_profile_key_xfmr: root: ", inParams.ygRoot,
+			", uri: ", inParams.uri)
+	}
+	pathInfo := NewPathInfo(inParams.uri)
+	channelIndex := pathInfo.Var("index")
+	lower := pathInfo.Var("lower-frequency")
+	upper := pathInfo.Var("upper-frequency")
+	if lower == "*" || lower == "" || upper == "*" || upper == "" {
+		// For list GET on distribution (no both keys in URI), keep the query
+		// constrained to the parent channel key instead of scanning all channels.
+		if channelIndex != "" && channelIndex != "*" {
+			return channelIndex + "|*", nil
+		}
+		return "*", nil
+	}
+	key := channelIndex + "|" + lower + "|" + upper
+	return key, nil
+}
+
+var DbToYang_wss_power_profile_key_xfmr KeyXfmrDbToYang = func(inParams XfmrParams) (map[string]interface{}, error) {
+	rmap := make(map[string]interface{})
+
+	// DB key is "index|lower-frequency|upper-frequency"
+	parts := strings.Split(inParams.key, "|")
+	if len(parts) >= 2 {
+		rmap["lower-frequency"] = parts[1]
+	}
+	if len(parts) >= 3 {
+		rmap["upper-frequency"] = parts[2]
+	}
+
+	return rmap, nil
+}
+
+var YangToDb_wss_power_profile_upper_frequency_xfmr FieldXfmrYangToDb = func(inParams XfmrParams) (map[string]string, error) {
+	rmap := make(map[string]string)
+	rmap["NULL"] = "NULL"
+	return rmap, nil
+}
+
+var DbToYang_wss_power_profile_upper_frequency_xfmr FieldXfmrDbtoYang = func(inParams XfmrParams) (map[string]interface{}, error) {
+	rmap := make(map[string]interface{})
+	parts := strings.Split(inParams.key, "|")
+	if len(parts) >= 3 {
+		rmap["upper-frequency"] = parts[2]
+	}
+	return rmap, nil
+}
+
+var YangToDb_wss_power_profile_lower_frequency_xfmr FieldXfmrYangToDb = func(inParams XfmrParams) (map[string]string, error) {
+	rmap := make(map[string]string)
+	rmap["NULL"] = "NULL"
+	return rmap, nil
+}
+
+var DbToYang_wss_power_profile_lower_frequency_xfmr FieldXfmrDbtoYang = func(inParams XfmrParams) (map[string]interface{}, error) {
+	rmap := make(map[string]interface{})
+	parts := strings.Split(inParams.key, "|")
+	if len(parts) >= 2 {
+		rmap["lower-frequency"] = parts[1]
+	}
+	return rmap, nil
 }

@@ -16,3 +16,14 @@ gnsi-authz.yang
 gnsi-pathz.yang
 gnsi-certz.yang
 gnsi-credentialz.yang
+
+# optical yang models transformer need to load
+openconfig-optical-attenuator.yang
+openconfig-optical-attenuator-annot.yang
+openconfig-optical-amplifier.yang
+openconfig-optical-amplifier-annot.yang
+openconfig-channel-monitor.yang
+openconfig-channel-monitor-annot.yang
+openconfig-wavelength-router.yang
+openconfig-wavelength-router-annot.yang
+

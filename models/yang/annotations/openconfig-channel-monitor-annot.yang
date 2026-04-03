@@ -5,6 +5,7 @@ module openconfig-channel-monitor-annot {
     namespace "http://openconfig.net/yang/annotation/oc-chan-monitor-annot";
     prefix "oc-chan-monitor-annot";
 
+    import sonic-extensions { prefix sonic-ext; }
     import openconfig-extensions { prefix oc-ext; }
     import openconfig-transport-types { prefix oc-opt-types; }
     import openconfig-channel-monitor { prefix oc-chan-monitor; }
@@ -76,13 +77,11 @@ module openconfig-channel-monitor-annot {
 
     deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:lower-frequency {
       deviate add {
-        sonic-ext:field-name "lower-frequency";
       }
     }
 
     deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:upper-frequency {
       deviate add {
-        sonic-ext:field-name "upper-frequency";
       }
     }
 
@@ -90,9 +89,16 @@ module openconfig-channel-monitor-annot {
       deviate add {
       }
     }
+    
+    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:state/oc-chan-monitor:lower-frequency {
+      deviate add {
+        sonic-ext:field-transformer "ocm_channel_lower_frequency_xfmr";
+      }
+    }
 
     deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:state/oc-chan-monitor:upper-frequency {
       deviate add {
+        sonic-ext:field-transformer "ocm_channel_upper_frequency_xfmr";
       }
     }
 
@@ -105,11 +111,6 @@ module openconfig-channel-monitor-annot {
     deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:state/oc-chan-monitor:target-power {
       deviate add {
         sonic-ext:field-name "target-power";
-      }
-    }
-
-    deviation /oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/oc-chan-monitor:channels/oc-chan-monitor:channel/oc-chan-monitor:state/oc-chan-monitor:lower-frequency {
-      deviate add {
       }
     }
 

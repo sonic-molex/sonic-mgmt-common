@@ -1,0 +1,205 @@
+module sonic-wavelength-router {
+	namespace "http://github.com/Azure/sonic-wavelength-router";
+	prefix "sopt-wss";
+	
+	/* Generated from openconfig-wavelength-router.yang and
+	 * openconfig-wavelength-router-annot.yang. */
+	
+	organization
+		"SONiC";
+	
+	contact
+		"SONiC";
+	
+	description
+		"SONIC WAVELENGTH ROUTER";
+	
+	revision 2026-01-28 {
+		description
+			"Initial revision.";
+	}
+
+	container sonic-wavelength-router {
+
+		/* CONFIG_DB table: OTN_WSS */
+		container OTN_WSS {
+
+		list OTN_WSS_LIST {
+			key "index";
+
+			leaf index {
+				type uint32;
+				description
+					"Identifier for the defined media channel.";
+			}
+
+			leaf name {
+				type string;
+				description
+					"Name of the media channel (e.g., WSS0-0|191266500).";
+			}
+
+			leaf lower-frequency {
+				type uint64;
+				units "MHz";
+				description
+					"Lower frequency for the spectrum defined by this media channel.";
+			}
+
+			leaf upper-frequency {
+				type uint64;
+				units "MHz";
+				description
+					"Upper frequency for the spectrum defined by this media channel.";
+			}
+
+			leaf admin-status {
+				type string;
+				description
+					"Administrative status of the media channel (e.g., ENABLED, DISABLED, MAINT).";
+			}
+
+			leaf super-channel {
+				type boolean;
+				description
+					"True if the media channel is a super channel.";
+			}
+
+			leaf super-channel-parent {
+				type uint32;
+				description
+					"Index of the super channel parent, if applicable.";
+			}
+
+			leaf ase-control-mode {
+				type string;
+				description
+					"ASE control mode for the media channel.";
+			}
+
+			leaf ase-injection-mode {
+				type string;
+				description
+					"ASE injection mode used to determine whether ASE should be injected.";
+			}
+
+			leaf ase-injection-threshold {
+				type decimal64 {
+					fraction-digits 2;
+				}
+				units "dBm";
+				description
+					"Optical power threshold below which ASE noise should be injected.";
+			}
+
+			leaf ase-injection-delta {
+				type decimal64 {
+					fraction-digits 2;
+				}
+				units "dB";
+				description
+					"Optical power loss delta relative to configured targets for ASE injection.";
+			}
+
+			leaf media-channel-injection-offset {
+				type decimal64 {
+					fraction-digits 2;
+				}
+				units "dB";
+				description
+					"Optical power offset relative to ASE injection threshold at which point ASE should be removed and the media channel injected.";
+			}
+
+			leaf attenuation-control-mode {
+				type string;
+				description
+					"Attenuation control mode for the media channel.";
+			}
+
+			leaf attenuation-control-range {
+				type string;
+				description
+					"Attenuation control range for the media channel.";
+			}
+
+			leaf max-undershoot-compensation {
+				type decimal64 {
+					fraction-digits 2;
+				}
+				units "dB";
+				description
+					"Maximum allowable attenuation adjustment to compensate undershoot.";
+			}
+
+			leaf max-overshoot-compensation {
+				type decimal64 {
+					fraction-digits 2;
+				}
+				units "dB";
+				description
+					"Maximum allowable attenuation adjustment to compensate overshoot.";
+			}
+
+			leaf source-port-name {
+				type string;
+				description
+					"Source port name for the media channel.";
+			}
+
+			leaf dest-port-name {
+				type string;
+				description
+					"Destination port name for the media channel.";
+			}
+		}
+		}
+
+		/* CONFIG_DB table: OTN_WSS_SPEC_POWER */
+		container OTN_WSS_SPEC_POWER {
+
+		list OTN_WSS_SPEC_POWER_LIST {
+			key "index lower-frequency upper-frequency";
+
+			leaf index {
+				type uint32;
+				description
+					"Media channel index to which this spectrum profile entry applies.";
+			}
+
+			leaf lower-frequency {
+				type uint64;
+				units "MHz";
+				description
+					"Lower frequency of the specified target spectrum power.";
+			}
+
+			leaf upper-frequency {
+				type uint64;
+				units "MHz";
+				description
+					"Upper frequency of the specified target spectrum power.";
+			}
+
+			leaf target-power {
+				type decimal64 {
+					fraction-digits 2;
+				}
+				units "dBm";
+				description
+					"Target average power to achieve within the specified spectrum.";
+			}
+
+			leaf attenuation {
+				type decimal64 {
+					fraction-digits 2;
+				}
+				units "dB";
+				description
+					"Attenuation value set on this frequency slot (when applicable).";
+			}
+
+		}
+		}
+
+	}
+}

@@ -1,10 +1,8 @@
 module sonic-optical-amplifier {
+	/* Generated from openconfig-optical-amplifier.yang and
+	 * openconfig-optical-amplifier-annot.yang. */
 	namespace "http://github.com/Azure/sonic-optical-amplifier";
 	prefix "sopt-amp";
-	
-	import sonic-extension {
-          prefix sonic-ext;
-        }
 
 	organization
 		"SONiC";

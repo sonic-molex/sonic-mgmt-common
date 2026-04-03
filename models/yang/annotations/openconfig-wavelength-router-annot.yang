@@ -1,0 +1,487 @@
+module openconfig-wavelength-router-annot {
+
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/annotation/oc-wave-router-annot";
+    prefix "oc-wave-router-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import openconfig-wavelength-router { prefix oc-wave-router; }
+
+    deviation /oc-wave-router:wavelength-router {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels {
+      deviate add {
+        sonic-ext:table-name "OTN_WSS";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel {
+      deviate add {
+        sonic-ext:key-transformer "wss_index_key_xfmr";
+        sonic-ext:table-transformer "otn_table_xfmr";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:index {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:name {
+      deviate add {
+        sonic-ext:field-name "name";
+      }
+    }
+    
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:index {
+      deviate add {
+        sonic-ext:field-transformer "wss_index_field_xfmr";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:lower-frequency {
+      deviate add {
+        sonic-ext:field-name "lower-frequency";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:upper-frequency {
+      deviate add {
+        sonic-ext:field-name "upper-frequency";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:media-channel-injection-offset {
+      deviate add {
+        sonic-ext:field-name "media-channel-injection-offset";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:ase-injection-mode {
+      deviate add {
+        sonic-ext:field-name "ase-injection-mode";
+      }
+    }    
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:max-overshoot-compensation {
+      deviate add {
+        sonic-ext:field-name "max-overshoot-compensation";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:ase-injection-delta {
+      deviate add {
+        sonic-ext:field-name "ase-injection-delta";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:super-channel {
+      deviate add {
+        sonic-ext:field-name "super-channel";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:ase-control-mode {
+      deviate add {
+        sonic-ext:field-name "ase-control-mode";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:max-undershoot-compensation {
+      deviate add {
+        sonic-ext:field-name "max-undershoot-compensation";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:admin-status {
+      deviate add {
+        sonic-ext:field-name "admin-status";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:attenuation-control-mode {
+      deviate add {
+        sonic-ext:field-name "attenuation-control-mode";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:ase-injection-threshold {
+      deviate add {
+        sonic-ext:field-name "ase-injection-threshold";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:super-channel-parent {
+      deviate add {
+        sonic-ext:field-name "super-channel-parent";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:config/oc-wave-router:attenuation-control-range {
+      deviate add {
+        sonic-ext:field-name "attenuation-control-range";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution {
+      deviate add {
+        sonic-ext:table-name "OTN_WSS_SPEC_POWER";
+        sonic-ext:key-transformer "wss_power_profile_key_xfmr";
+        sonic-ext:table-transformer "otn_table_xfmr";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:lower-frequency {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:upper-frequency {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:config {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:config/oc-wave-router:target-power {
+      deviate add {
+        sonic-ext:field-name "target-power";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:config/oc-wave-router:attenuation {
+      deviate add {
+        sonic-ext:field-name "attenuation";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:config/oc-wave-router:lower-frequency {
+      deviate add {
+        sonic-ext:field-transformer "wss_power_profile_lower_frequency_xfmr";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:config/oc-wave-router:upper-frequency {
+      deviate add {
+        sonic-ext:field-transformer "wss_power_profile_upper_frequency_xfmr";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:state {
+      deviate add {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:table-name "OTN_WSS_SPEC_POWER_TABLE";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:state/oc-wave-router:upper-frequency {
+      deviate add {
+        sonic-ext:field-transformer "wss_power_profile_upper_frequency_xfmr";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:state/oc-wave-router:target-power {
+      deviate add {
+        sonic-ext:field-name "target-power";
+      }
+    }
+    
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:state/oc-wave-router:actual-attenuation {
+      deviate add {
+        sonic-ext:field-name "actual-attenuation";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:state/oc-wave-router:lower-frequency {
+      deviate add {
+        sonic-ext:field-transformer "wss_power_profile_lower_frequency_xfmr";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state {
+      deviate add {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:table-name "OTN_WSS_TABLE";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:media-channel-injection-offset {
+      deviate add {
+        sonic-ext:field-name "media-channel-injection-offset";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:lower-frequency {
+      deviate add {
+        sonic-ext:field-name "lower-frequency";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:upper-frequency {
+      deviate add {
+        sonic-ext:field-name "upper-frequency";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:ase-status {
+      deviate add {
+        sonic-ext:field-name "ase-status";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:ase-injection-delta {
+      deviate add {
+        sonic-ext:field-name "ase-injection-delta";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:index {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:ase-control-mode {
+      deviate add {
+        sonic-ext:field-name "ase-control-mode";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:name {
+      deviate add {
+        sonic-ext:field-name "name";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:attenuation-control-mode {
+      deviate add {
+        sonic-ext:field-name "attenuation-control-mode";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:ase-injection-mode {
+      deviate add {
+        sonic-ext:field-name "ase-injection-mode";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:max-overshoot-compensation {
+      deviate add {
+        sonic-ext:field-name "max-overshoot-compensation";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:super-channel-parent {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:max-undershoot-compensation {
+      deviate add {
+        sonic-ext:field-name "max-undershoot-compensation";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:oper-status {
+      deviate add {
+        sonic-ext:field-name "oper-status";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:attenuation-control-range {
+      deviate add {
+        sonic-ext:field-name "attenuation-control-range";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:ase-injection-threshold {
+      deviate add {
+        sonic-ext:field-name "ase-injection-threshold";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:super-channel {
+      deviate add {
+        sonic-ext:field-name "super-channel";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:state/oc-wave-router:admin-status {
+      deviate add {
+        sonic-ext:field-name "admin-status";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:source {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:source/oc-wave-router:state {
+      deviate add {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:table-name "OTN_WSS_TABLE";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:source/oc-wave-router:state/oc-wave-router:port-name {
+      deviate add {
+        sonic-ext:field-name "source-port-name";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:source/oc-wave-router:config {
+      deviate add {
+        sonic-ext:table-name "OTN_WSS";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:source/oc-wave-router:config/oc-wave-router:port-name {
+      deviate add {
+        sonic-ext:field-name "source-port-name";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:dest {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:dest/oc-wave-router:config {
+      deviate add {
+        sonic-ext:table-name "OTN_WSS";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:dest/oc-wave-router:config/oc-wave-router:port-name {
+      deviate add {
+        sonic-ext:field-name "dest-port-name";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:dest/oc-wave-router:state {
+      deviate add {
+        sonic-ext:db-name "STATE_DB";
+        sonic-ext:table-name "OTN_WSS_TABLE";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:media-channels/oc-wave-router:channel/oc-wave-router:dest/oc-wave-router:state/oc-wave-router:port-name {
+      deviate add {
+        sonic-ext:field-name "dest-port-name";
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:config {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:config/oc-wave-router:upper-frequency {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:config/oc-wave-router:target-power {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:config/oc-wave-router:lower-frequency {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:state {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:state/oc-wave-router:upper-frequency {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:state/oc-wave-router:target-power {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:state/oc-wave-router:lower-frequency {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:lower-frequency {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:spectrum-power-profile/oc-wave-router:distribution/oc-wave-router:upper-frequency {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:name {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:config {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:config/oc-wave-router:name {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:state {
+      deviate add {
+      }
+    }
+
+    deviation /oc-wave-router:wavelength-router/oc-wave-router:port-spectrum-power-profiles/oc-wave-router:port/oc-wave-router:state/oc-wave-router:name {
+      deviate add {
+      }
+    }
+
+}
+
