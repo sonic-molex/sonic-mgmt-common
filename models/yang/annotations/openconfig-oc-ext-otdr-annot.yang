@@ -1,4 +1,4 @@
-module sonic-oc-ext-otdr-annot {
+module openconfig-oc-ext-otdr-annot {
 
     yang-version "1";
 
@@ -6,7 +6,7 @@ module sonic-oc-ext-otdr-annot {
     prefix "oc-otdr-annot";
 
     import sonic-extensions { prefix sonic-ext; }
-    import sonic-oc-ext-otdr { prefix oc-otdr; }
+    import openconfig-oc-ext-otdr { prefix oc-otdr; }
 
     deviation /oc-otdr:start-scan {
       deviate add {

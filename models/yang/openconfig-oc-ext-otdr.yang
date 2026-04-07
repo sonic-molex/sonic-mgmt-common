@@ -1,4 +1,4 @@
-module sonic-oc-ext-otdr {
+module openconfig-oc-ext-otdr {
 
   yang-version "1";
 
@@ -46,7 +46,7 @@ module sonic-oc-ext-otdr {
     type enumeration {
       enum START {
         description
-          "First event on a OTDR trace from initial point, 
+          "First event on a OTDR trace from initial point,
           regardless if the loss or reflection exceed the thresholds or not.";
       }
       enum END {
@@ -100,7 +100,7 @@ module sonic-oc-ext-otdr {
           fraction-digits 2;
         }
         description
-	        "Reflection threshold.";
+          "Reflection threshold.";
       }
 
       leaf splice-loss-threshold {
@@ -169,7 +169,7 @@ module sonic-oc-ext-otdr {
       leaf wavelength {
         type oc-opt-types:frequency-type;
         description
-          "The wavelength in MHz that will be sent by the OTDR. 
+          "The wavelength in MHz that will be sent by the OTDR.
           This may be left blank if the OTDR only supports one wavelength.";
       }
 
@@ -285,7 +285,7 @@ module sonic-oc-ext-otdr {
           base oc-amp:FIBER_TYPE_PROFILE;
         }
         description
-          "The type of fiber that is being measured as discovered by the OTDR.";  
+          "The type of fiber that is being measured as discovered by the OTDR.";
       }
 
       leaf event-count {
@@ -348,7 +348,7 @@ module sonic-oc-ext-otdr {
       leaf baseline {
         type boolean;
         default false;
-        description 
+        description
           "if this trace is the baseline.";
       }
     }
@@ -439,7 +439,7 @@ module sonic-oc-ext-otdr {
 
   rpc start-scan {
     description
-      "The RPC instantly trigger the otdr and send back the results. 
+      "The RPC instantly trigger the otdr and send back the results.
       It is an async request as the otdr scan may take a while to finish.
       user can query the odtr state for scan status (ACTIVE/INACTIVE).";
 
