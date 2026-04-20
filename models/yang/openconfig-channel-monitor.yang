@@ -1,6 +1,6 @@
 module openconfig-channel-monitor {
 
-  yang-version "1";
+  yang-version "1.1";
 
   // namespace
   namespace "http://openconfig.net/yang/channel-monitor";
@@ -345,10 +345,7 @@ module openconfig-channel-monitor {
   uses channel-monitor-top;
 
 
-  // augment statements
-
   // rpc statements
-
   // notification statements
 
 }

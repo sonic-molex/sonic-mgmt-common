@@ -1,14 +1,25 @@
 package transformer
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
+	"github.com/Azure/sonic-mgmt-common/translib/db"
+	"github.com/Azure/sonic-mgmt-common/translib/tlerr"
 	log "github.com/golang/glog"
 )
 
+const (
+	ocmNotificationChannel = "OTN_OCM_NOTIFICATION"
+	ocmReplyChannel        = "OTN_OCM_REPLY"
+	ocmRpcTimeout          = 10 // seconds
+)
+
 func init() {
+	XlateFuncBind("act_get_ocm_raw_cb", act_get_ocm_raw_cb)
 	XlateFuncBind("YangToDb_oc_name_key_xfmr", YangToDb_oc_name_key_xfmr)
 	XlateFuncBind("DbToYang_oc_name_key_xfmr", DbToYang_oc_name_key_xfmr)
 	XlateFuncBind("YangToDb_oc_name_field_xfmr", YangToDb_oc_name_field_xfmr)
@@ -373,4 +384,137 @@ var DbToYang_wss_power_profile_lower_frequency_xfmr FieldXfmrDbtoYang = func(inP
 		rmap["lower-frequency"] = parts[1]
 	}
 	return rmap, nil
+}
+
+// act_get_ocm_raw_cb handles the get-ocm-raw action.
+//
+// Flow:
+//  1. Get "port" from URI path variables (channel-monitor list key "name").
+//  2. Subscribe to OTN_OCM_REPLY before publishing, to avoid missing the reply.
+//  3. Publish ["get-ocm-raw", "<port>", []] to OTN_OCM_NOTIFICATION.
+//  4. Wait for orchagent reply on OTN_OCM_REPLY.
+//  5. Decode reply and return as openconfig-channel-monitor output JSON.
+var act_get_ocm_raw_cb ActionCallpoint = func(vars map[string]string, body []byte, dbs [db.MaxDB]*db.DB) ([]byte, error) {
+
+	// --- 1. Get port from URI path variables (channel-monitor list key) ---
+	port := vars["name"]
+	if port == "" {
+		return nil, tlerr.New("missing channel-monitor name in URI")
+	}
+	log.V(3).Infof("act_get_ocm_raw_cb: port=%s", port)
+
+	// --- 2. Subscribe to reply channel BEFORE publishing request ---
+	replyDB, err := db.PubSubRpcDB(db.Options{DBNo: db.ApplDB}, ocmReplyChannel)
+	if err != nil {
+		log.Errorf("act_get_ocm_raw_cb: PubSubRpcDB failed: %v", err)
+		return nil, tlerr.New("failed to subscribe to OCM reply channel")
+	}
+	defer replyDB.ClosePubSubRpcDB()
+
+	// --- 3. Build and publish the swsscommon notification message ---
+	msg, err := buildSwssNotification("get-ocm-raw", port, nil)
+	if err != nil {
+		return nil, tlerr.New("failed to build notification message")
+	}
+
+	listeners, err := replyDB.SendRpcRequest(ocmNotificationChannel, msg)
+	if err != nil {
+		log.Errorf("act_get_ocm_raw_cb: SendRpcRequest failed: %v", err)
+		return nil, tlerr.New("failed to send OCM RPC request")
+	}
+	if listeners == 0 {
+		log.Warningf("act_get_ocm_raw_cb: no listeners on %s", ocmNotificationChannel)
+		return nil, tlerr.New("no orchagent listener on OCM notification channel")
+	}
+
+	// --- 4. Wait for reply ---
+	replies, err := replyDB.GetRpcResponse(1, ocmRpcTimeout)
+	if err != nil {
+		log.Errorf("act_get_ocm_raw_cb: GetRpcResponse failed: %v", err)
+		return nil, tlerr.New("OCM RPC timed out or failed")
+	}
+	if len(replies) == 0 {
+		return nil, tlerr.New("OCM RPC: empty reply")
+	}
+
+	// --- 5. Decode swsscommon reply and build output ---
+	op, _, fvs, err := parseSwssNotification(replies[0])
+	if err != nil {
+		log.Errorf("act_get_ocm_raw_cb: failed to parse reply: %v", err)
+		return nil, tlerr.New("failed to parse OCM reply")
+	}
+
+	// Output struct mirrors proto GetOcmRawResponse.Output JSON shape
+	var resp struct {
+		Output struct {
+			Length        uint32 `json:"length"`
+			Data          string `json:"data"`
+			Status        string `json:"status"`
+			StatusMessage string `json:"status-message"`
+		} `json:"sonic-oc-action-ext:output"`
+	}
+
+	resp.Output.Status = "Successful"
+	if op != "SUCCESS" {
+		resp.Output.Status = "Failed"
+		resp.Output.StatusMessage = fmt.Sprintf("orchagent returned: %s", op)
+	}
+
+	for _, fv := range fvs {
+		switch fv[0] {
+		case "count":
+			if n, err := strconv.ParseUint(fv[1], 10, 32); err == nil {
+				resp.Output.Length = uint32(n)
+			}
+		case "data":
+			resp.Output.Data = fv[1]
+		}
+	}
+
+	result, err := json.Marshal(&resp)
+	if err != nil {
+		return nil, tlerr.New("failed to marshal OCM output")
+	}
+	return result, nil
+}
+
+// buildSwssNotification encodes a swsscommon NotificationProducer message.
+// swsscommon flat format: ["<op>", "<data>", "field1", "val1", ...]
+func buildSwssNotification(op, data string, fvs [][2]string) (string, error) {
+	msg := []interface{}{op, data}
+	for _, fv := range fvs {
+		msg = append(msg, fv[0], fv[1])
+	}
+	b, err := json.Marshal(msg)
+	return string(b), err
+}
+
+// parseSwssNotification decodes a swsscommon NotificationProducer reply.
+// swsscommon flat format: ["<op>", "<data>", "field1", "val1", ...]
+func parseSwssNotification(raw string) (op, data string, fvs [][2]string, err error) {
+	var arr []json.RawMessage
+	if err = json.Unmarshal([]byte(raw), &arr); err != nil {
+		return
+	}
+	if len(arr) < 2 {
+		err = fmt.Errorf("notification has %d elements, want at least 2", len(arr))
+		return
+	}
+	if err = json.Unmarshal(arr[0], &op); err != nil {
+		return
+	}
+	if err = json.Unmarshal(arr[1], &data); err != nil {
+		return
+	}
+	for i := 2; i+1 < len(arr); i += 2 {
+		var key, val string
+		if err = json.Unmarshal(arr[i], &key); err != nil {
+			return
+		}
+		if err = json.Unmarshal(arr[i+1], &val); err != nil {
+			return
+		}
+		fvs = append(fvs, [2]string{key, val})
+	}
+	return
 }

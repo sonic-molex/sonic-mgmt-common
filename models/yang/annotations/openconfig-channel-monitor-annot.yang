@@ -1,6 +1,6 @@
 module openconfig-channel-monitor-annot {
 
-    yang-version "1";
+    yang-version "1.1";
 
     namespace "http://openconfig.net/yang/annotation/oc-chan-monitor-annot";
     prefix "oc-chan-monitor-annot";
@@ -9,6 +9,13 @@ module openconfig-channel-monitor-annot {
     import openconfig-extensions { prefix oc-ext; }
     import openconfig-transport-types { prefix oc-opt-types; }
     import openconfig-channel-monitor { prefix oc-chan-monitor; }
+    import sonic-oc-action-ext { prefix sonic-oc-act-ext; }
+
+    deviation "/oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor/sonic-oc-act-ext:get-ocm-raw" {
+      deviate add {
+        sonic-ext:action-callback "act_get_ocm_raw_cb";
+      }
+    }
 
     deviation /oc-chan-monitor:channel-monitors {
       deviate add {

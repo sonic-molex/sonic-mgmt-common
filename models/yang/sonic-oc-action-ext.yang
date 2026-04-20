@@ -1,0 +1,111 @@
+module sonic-oc-action-ext {
+
+  yang-version "1.1";
+
+  // namespace
+  namespace "http://github.com/Azure/sonic-oc-action-ext";
+
+  prefix "sonic-oc-act-ext";
+
+  // import some basic types
+  import openconfig-extensions { prefix oc-ext; }
+  import openconfig-channel-monitor { prefix oc-chan-monitor; }
+
+
+  // meta
+  organization "OpenConfig working group";
+
+  contact
+    "OpenConfig working group
+      www.openconfig.net";
+
+  description
+    "This module is a collection of RPCs (and any auxiliary
+    typedefs/groupings) for the SONiC OTN implementation that are
+    not part of the upstream openconfig-* models. RPCs and augments
+    targeting different upstream models can all be added here.";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2026-04-08" {
+    description
+      "Initial revision. Hosts the get-ocm-raw RPC moved out of the
+      upstream openconfig-channel-monitor module.";
+    reference "0.1.0";
+  }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:regexp-posix;
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+  typedef action-status {
+    type enumeration {
+      enum Successful {
+        value 1;
+      }
+      enum Failed {
+        value 2;
+      }
+      enum In-progress {
+        value 3;
+      }
+      enum Disabled {
+        value 4;
+      }
+    }
+    description
+      "Status of an action invocation.";
+  }
+
+  grouping action-response-status {
+    description
+      "Common response status fields shared by actions in this module.";
+
+    leaf status {
+      type action-status;
+      mandatory true;
+      description
+        "Successful, Failed, In-progress, or Disabled";
+    }
+    leaf status-message {
+      type string;
+      description
+        "Gives a more detailed status";
+    }
+  }
+
+  // augment statements
+
+  augment "/oc-chan-monitor:channel-monitors/oc-chan-monitor:channel-monitor" {
+    description
+      "Add OCM raw-data retrieval action to each channel-monitor
+      entry.  This replaces a top-level RPC so that the action is
+      scoped to the specific OCM instance.";
+
+    action get-ocm-raw {
+      description
+        "Get OCM raw data for this channel monitor.";
+
+      output {
+        leaf length {
+          type uint32;
+          description
+            "Length in bytes of the returned raw data";
+        }
+        leaf data {
+          type binary;
+          description
+            "Raw OCM data blob";
+        }
+
+        uses action-response-status;
+      }
+    }
+  }
+
+  // rpc statements
+
+  // notification statements
+
+}

@@ -22,6 +22,7 @@ openconfig-optical-attenuator.yang
 openconfig-optical-attenuator-annot.yang
 openconfig-optical-amplifier.yang
 openconfig-optical-amplifier-annot.yang
+sonic-oc-action-ext.yang
 openconfig-channel-monitor.yang
 openconfig-channel-monitor-annot.yang
 openconfig-wavelength-router.yang
