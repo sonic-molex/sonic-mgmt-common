@@ -101,6 +101,12 @@ module sonic-extensions {
     description "RPC callback to be invoked for action";
   }
 
+  extension action-callback {
+    argument "callback";
+    description
+      "Action callback to be invoked for action within list or container";
+  }
+
   extension value-transformer {
     argument "value-transformer-name";
     description "Db table field/key value transformer name. This can be applied to transform yang value to some different format.";
