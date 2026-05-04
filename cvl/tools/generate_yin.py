@@ -339,7 +339,8 @@ def process(args):
 def find_schema_modules(mod_dict) -> set:
     schema_mods = set()
     for modname, mod in mod_dict.items():
-        if not has_schema(mod):
+        has_deviation = any(ss.raw_keyword == "deviation" for ss in mod.substmts)
+        if not has_schema(mod) and not has_deviation:
             continue
         imports = [ss.arg for ss in mod.substmts if ss.raw_keyword == "import"]
         schema_mods.add(modname)
