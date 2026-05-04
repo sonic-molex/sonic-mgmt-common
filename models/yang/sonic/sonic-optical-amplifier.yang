@@ -1,8 +1,9 @@
 module sonic-optical-amplifier {
-	/* Generated from openconfig-optical-amplifier.yang and
-	 * openconfig-optical-amplifier-annot.yang. */
+
 	namespace "http://github.com/Azure/sonic-optical-amplifier";
 	prefix "sopt-amp";
+
+  import sonic-extension { prefix sonic-ext; }
 
 	organization
 		"SONiC";
@@ -13,11 +14,131 @@ module sonic-optical-amplifier {
 	description
 		"SONIC OPTICAL AMPLIFIER";
 
+	revision 2026-04-30 {
+		description
+			"Add openconfig identity definition.";
+	}
+
 	revision 2022-06-13 {
 		description
 			"Initial revision.";
 	}
 
+	identity OPTICAL_AMPLIFIER_TYPE {
+		description
+			"Type definition for different types of optical amplifiers";
+	}
+
+	identity EDFA {
+		base OPTICAL_AMPLIFIER_TYPE;
+		description
+			"Erbium doped fiber amplifer (EDFA)";
+	}
+
+	identity FORWARD_RAMAN {
+		base OPTICAL_AMPLIFIER_TYPE;
+		description
+			"Forward pumping Raman amplifier";
+	}
+
+	identity BACKWARD_RAMAN {
+		base OPTICAL_AMPLIFIER_TYPE;
+		description
+			"Backward pumping Raman amplifier";
+	}
+
+	identity HYBRID {
+		base OPTICAL_AMPLIFIER_TYPE;
+		description
+			"Hybrid backward pumping Raman + EDFA amplifier";
+	}
+
+	identity GAIN_RANGE {
+		description
+			"Base type for expressing the gain range for a switched gain amplifier.";
+	}
+
+	identity LOW_GAIN_RANGE {
+		base GAIN_RANGE;
+		description
+			"LOW gain range setting";
+	}
+
+	identity MID_GAIN_RANGE {
+		base GAIN_RANGE;
+		description
+			"MID gain range setting";
+	}
+
+	identity HIGH_GAIN_RANGE {
+		base GAIN_RANGE;
+		description
+			"HIGH gain range setting";
+	}
+
+	identity FIXED_GAIN_RANGE {
+		base GAIN_RANGE;
+		description
+			"Fixed or non-switched gain amplifier";
+	}
+
+	identity OPTICAL_AMPLIFIER_MODE {
+		description
+			"Type definition for different types of optical amplifier operating modes";
+	}
+
+	identity CONSTANT_POWER {
+		base OPTICAL_AMPLIFIER_MODE;
+		description
+			"Constant power mode";
+	}
+
+	identity CONSTANT_GAIN {
+		base OPTICAL_AMPLIFIER_MODE;
+		description
+			"Constant gain mode";
+	}
+
+	identity DYNAMIC_GAIN {
+		base OPTICAL_AMPLIFIER_MODE;
+		description
+			"Dynamic gain mode";
+	}
+
+	identity FIBER_TYPE_PROFILE {
+		description
+			"Type definition for different profiles of fiber types";
+	}
+
+	identity DSF {
+		base FIBER_TYPE_PROFILE;
+		description
+			"Dispersion shifted fiber";
+	}
+
+	identity LEAF {
+		base FIBER_TYPE_PROFILE;
+		description
+			"Large effective area fiber";
+	}
+
+	identity SSMF {
+		base FIBER_TYPE_PROFILE;
+		description
+			"Standard single mode fiber";
+	}
+
+	identity TWC {
+		base FIBER_TYPE_PROFILE;
+		description
+			"True wave classic";
+	}
+
+	identity TWRS {
+		base FIBER_TYPE_PROFILE;
+		description
+			"True wave reduced slope";
+	}
 
 	container sonic-optical-amplifier {
 
@@ -34,7 +155,9 @@ module sonic-optical-amplifier {
             }
             
             leaf type {
-              type string;
+              type identityref {
+                base OPTICAL_AMPLIFIER_TYPE;
+              }
               description
                 "Type of the amplifier";
             }
@@ -43,10 +166,34 @@ module sonic-optical-amplifier {
               type decimal64 {
                 fraction-digits 2;
               }
+              sonic-ext:custom-validation "ValidateOtnGain";
               description
                 "Positive gain applied by the amplifier.";
             }
-            
+			leaf min-gain {
+			  type decimal64 {
+				  fraction-digits 2;
+			  }
+			  units "dBm";
+			  description
+				  "The minimum allowed gain of the amplifier. This is used
+				  when the amp-mode is in CONSTANT_POWER or DYNAMIC_GAIN mode
+				  to prevent the gain from dropping below a desired threshold.
+				  If left empty, the platform will apply a minimum gain based
+				  on hardware specifications.";
+			}
+			leaf max-gain {
+			  type decimal64 {
+				  fraction-digits 2;
+			  }
+			  units "dBm";
+			  description
+				  "The maximum allowed gain of the amplifier. This is used
+				  when the amp-mode is in CONSTANT_POWER or DYNAMIC_GAIN mode
+				  to prevent the gain from exceeding a desired threshold. If
+				  left empty, the platform will apply a maximum gain based on
+				  hardware specifications.";
+			}       
             leaf target-gain-tilt {
               type decimal64 {
                 fraction-digits 2;
@@ -56,14 +203,18 @@ module sonic-optical-amplifier {
             }
             
             leaf gain-range {
-              type string;
+              type identityref {
+                base GAIN_RANGE;
+              }
               description
                 "Selected gain range.  The gain range is a platform-defined
                  value indicating the switched gain amplifier setting";
             }
             
             leaf amp-mode {
-              type string;
+              type identityref {
+                base OPTICAL_AMPLIFIER_MODE;
+              }
               description
                 "The operating mode of the amplifier";
             }
@@ -83,13 +234,15 @@ module sonic-optical-amplifier {
             }
             
             leaf fiber-type-profile {
-              type string;
+              type identityref {
+                base FIBER_TYPE_PROFILE;
+              }
               description
                 "The fiber type profile specifies details about the
                 fiber type which are needed to accurately determine
                 the gain and perform efficient amplification. This is
                 only needed for Raman type amplifiers.";
-            } 
+            }
             
             leaf autolos {
               type boolean;
