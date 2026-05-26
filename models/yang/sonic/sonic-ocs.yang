@@ -1,0 +1,337 @@
+module sonic-ocs {
+  namespace "http://github.com/sonic-net/sonic-ocs";
+  prefix ocs;
+
+  import sonic-extension {
+    prefix sonic-ext;
+  }
+
+  organization
+    "SONiC";
+  contact
+    "SONiC";
+  description
+    "YANG model for SONiC OCS configuration and operational data";
+
+  revision 2024-11-21 {
+    description
+      "Initial revision.";
+  }
+
+  typedef simplex_port_name {
+    type string;
+    description
+      "Unique identifier for port";
+  }
+
+  typedef cross_connect_name {
+    type string;
+    description
+      "Unique identifier for the cross-connect";
+  }
+
+  typedef port_config_override_status {
+    type enumeration {
+      enum "powered_off" {
+        value 0;
+        description
+          "First element that the beam hits is powered off,
+           for dev/testing";
+      }
+      enum "normal" {
+        value 1;
+        description
+          "Default, status to be determined by presence of cross-connect";
+      }
+      enum "force_blocked" {
+        value 2;
+        description
+          "Regardless of cross-connect presence state, blocks the port";
+      }
+    }
+    description
+      "Configuration status of the port";
+  }
+
+  typedef port_oper_status {
+    type enumeration {
+      enum "powered_off" {
+        value 0;
+        description
+          "First element that the beam hits is powered off,
+           for dev/testing";
+      }
+      enum "blocked" {
+        value 1;
+        description
+          "Default state for any port with no config";
+      }
+      enum "tuning" {
+        value 2;
+        description
+          "IL is >0.5dB of target";
+      }
+      enum "connected" {
+        value 3;
+        description
+          "IL is within 0.5dB of target";
+      }
+      enum "failed" {
+        value 4;
+        description
+          "If there is a hardware failure";
+      }
+    }
+    description
+      "Status of the port";
+  }
+
+  typedef cross_connect_status {
+    type enumeration {
+      enum "disabled" {
+        value 0;
+        description
+          "Default, or HAL error";
+      }
+      enum "enabled" {
+        value 1;
+        description
+          "Connection active, light path established";
+      }
+      enum "invalid" {
+        value 2;
+        description
+          "Port conflict detected, connection cannot be established";
+      }
+    }
+    description
+      "Status of the cross-connect";
+  }
+
+  rpc bulk-update {
+    description
+      "Bulk delete and/or add OCS cross-connects in one CONFIG_DB transaction.
+       Deletes are applied before adds to avoid port conflicts.
+       Client may supply delete only, add only, or both.";
+    input {
+      leaf-list delete {
+        type cross_connect_name;
+        description
+          "Keys of cross-connects to delete (e.g. '1A-68B').
+           May be empty if request is add-only.";
+      }
+      list add {
+        key "cross_connect_id";
+        description
+          "Cross-connects to create or update.
+           Same schema as OCS_CROSS_CONNECT_LIST.
+           May be empty if request is delete-only.";
+        leaf cross_connect_id {
+          type cross_connect_name;
+          description
+            "Unique identifier for the cross-connect";
+        }
+        leaf a_side {
+          type simplex_port_name;
+          mandatory true;
+          description
+            "Simplex port ID for side A";
+        }
+        leaf b_side {
+          type simplex_port_name;
+          mandatory true;
+          description
+            "Simplex port ID for side B";
+        }
+      }
+    }
+    output {
+      leaf deleted_count {
+        type uint32;
+        description
+          "Number of cross-connects successfully deleted";
+      }
+      leaf added_count {
+        type uint32;
+        description
+          "Number of cross-connects successfully added";
+      }
+      leaf-list failed_keys {
+        type string;
+        description
+          "Keys that failed to delete or add (empty on full success)";
+      }
+    }
+  }
+
+  container sonic-ocs {
+    container OCS_PORT {
+      description
+        "List of all device ports and their configuration status.";
+      list OCS_PORT_LIST {
+        key "simplex_port_id";
+        leaf simplex_port_id {
+          type simplex_port_name;
+          description
+            "Simplex port ID";
+        }
+        leaf label {
+          type string;
+          description
+            "Label. Can be used for LLDP-like neighbor router
+             port information for cable tracing if needed,
+             e.g., router1_port1)";
+        }
+        leaf config_status {
+          type port_config_override_status;
+          description
+            "Configurable override status. It overrides the status imposed
+             by the programmed cross-connects (e.g., to block or power-off a
+             port). This feature is meant for running experiments
+             and for troubleshooting applications.";
+        }
+      }
+    }
+    container OCS_CROSS_CONNECT {
+      description
+        "List of ALL PROVISIONED cross-connects and their simplex port pairs.";
+      list OCS_CROSS_CONNECT_LIST {
+        key "cross_connect_id";
+        leaf cross_connect_id {
+          type cross_connect_name;
+          description
+            "Unique identifier for the cross-connect";
+        }
+        leaf a_side {
+          type simplex_port_name;
+          description
+            "Simplex port ID for side A";
+        }
+        leaf b_side {
+          type simplex_port_name;
+          description
+            "Simplex port ID for side B";
+        }
+      }
+    }
+    container OCS_PORT_TABLE {
+      sonic-ext:db-name "STATE_DB";
+      config false;
+      description
+        "Operational state data for ocs in STATE-DB.
+         Inventory (as-built) and operational data for all possible ports";
+      list OCS_PORT_LIST {
+        key "simplex_port_id";
+        leaf simplex_port_id {
+          type simplex_port_name;
+          description
+            "Simplex port ID";
+        }
+        leaf connector_type {
+          type string;
+          description
+            "Connector type, e.g., Duplex LC, MPO/MTP, etc.";
+        }
+        leaf connector_pin {
+          type string;
+          description
+            "Position of the fiber strand in the connector, e.g., 2.";
+        }
+        leaf target_simplex_port_id {
+          type simplex_port_name;
+          description
+            "Target simplex port ID from cross-connect config state.
+              Ensure that this state is updated as soon as the cross-connect
+              is applied and a target is set.";
+        }
+        leaf oper_status {
+          type port_oper_status;
+          description
+            "Operational status of the port";
+        }
+      }
+    }
+    container OCS_CROSS_CONNECT_TABLE {
+      sonic-ext:db-name "STATE_DB";
+      config false;
+      description
+        "Operational state data for ocs in STATE-DB.
+         Inventory (as-built) and operational data for all possible cross-connects";
+      list OCS_CROSS_CONNECT_LIST {
+        key "cross_connect_id";
+        leaf cross_connect_id {
+          type cross_connect_name;
+          description
+            "Unique identifier for the cross-connect";
+        }
+        leaf status {
+          type cross_connect_status;
+          description
+            "Cross-connect operational status";
+        }
+        leaf insertion_loss_dB {
+          type decimal64 {
+            fraction-digits 2;
+          }
+          units "dB";
+          description
+            "Run-time measured insertion loss";
+        }
+        leaf-list physical_path {
+          type string;
+          description
+            "Sequence of elements in the physical path that starts
+              and ends with the simplex_port_id at side A and B of the
+              cross-connect, respectively, and list all the elements
+              in between (e.g., 1A, fiber array A 5, panel A cell 10,
+              panel B cell 45, fiber array B 6, 2B)";
+        }
+      }
+    }
+    container OCS_FACTORY_INSERTION_LOSS_TABLE {
+      sonic-ext:db-name "STATE_DB";
+      config false;
+      description
+        "Inventory data for all possible cross-connects,
+          factory insertion loss measurements.";
+      list OCS_FACTORY_INSERTION_LOSS_LIST {
+        key "cross_connect_id frequency_THz temperature_C";
+        leaf cross_connect_id {
+          type cross_connect_name;
+          description
+            "Unique identifier for the cross-connect";
+        }
+        leaf temperature_C {
+          type decimal64 {
+            fraction-digits 2;
+          }
+          description
+            "Ambient temperature at which insertion loss is measured in Celsius
+              e.g., 25.0";
+        }
+        leaf frequency_THz {
+          type decimal64 {
+            fraction-digits 3;
+          }
+          description
+            "Center frequency in THz at which insertion loss is measured,
+              e.g., 229.1 (O-band) 193.5";
+        }
+        leaf loss_dB {
+          type decimal64 {
+            fraction-digits 2;
+          }
+          description
+            "Factory insertion loss in dB";
+        }
+        leaf accuracy_dB {
+          type decimal64 {
+            fraction-digits 2;
+          }
+          description
+            "Insertion loss measurement accuracy in dB";
+        }
+      }
+    }
+  }
+}

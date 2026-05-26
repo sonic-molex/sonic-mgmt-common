@@ -1,0 +1,17 @@
+module sonic-ocs-annot {
+
+    yang-version "1";
+
+    namespace "http://github.com/sonic-net/sonic-ocs-annot";
+    prefix "ocs-annot";
+
+    import sonic-extensions { prefix sonic-ext; }
+    import sonic-ocs { prefix ocs; }
+
+    deviation /ocs:bulk-update {
+      deviate add {
+        sonic-ext:rpc-callback "rpc_ocs_bulk_update_cb";
+      }
+    }
+
+}
